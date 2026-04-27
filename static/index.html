@@ -201,6 +201,91 @@
 
   #dashboard { display: none; }
   .aggiornato { font-size: 11px; color: var(--muted); }
+
+  /* ── PAGES ── */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── SEARCH BAR ── */
+  .search-bar {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+  }
+  .search-input {
+    flex: 1; background: var(--surface); border: 1px solid var(--border2);
+    border-radius: 7px; padding: 8px 14px; font-size: 13px;
+    font-family: var(--font); color: var(--text); outline: none;
+    transition: border-color .2s;
+  }
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--muted); }
+
+  /* ── FULL TABLE ── */
+  .full-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .full-table th {
+    font-size: 10px; font-weight: 500; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .5px;
+    padding: 10px 12px; border-bottom: 1px solid var(--border);
+    text-align: left; background: var(--surface2); position: sticky; top: 0;
+  }
+  .full-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text); }
+  .full-table tr:hover td { background: var(--surface2); }
+  .full-table tr:last-child td { border-bottom: none; }
+  .table-wrap { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; max-height: 500px; overflow-y: auto; }
+
+  /* ── CLIENT CARDS ── */
+  .client-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 12px; }
+  .client-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 18px;
+    transition: border-color .2s;
+  }
+  .client-card:hover { border-color: var(--border2); }
+  .client-card-top { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .client-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(37,99,235,.15); color: var(--accent-l);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600; flex-shrink: 0; font-family: var(--mono);
+  }
+  .client-email { font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .client-since { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .client-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .client-stat-val { font-family: var(--mono); font-size: 14px; font-weight: 500; }
+  .client-stat-label { font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .client-risk { display: flex; align-items: center; gap: 8px; }
+  .client-risk-bar { flex: 1; height: 3px; background: var(--border2); border-radius: 2px; }
+  .client-risk-fill { height: 100%; border-radius: 2px; }
+  .client-risk-pct { font-family: var(--mono); font-size: 11px; }
+
+  /* ── SETTINGS ── */
+  .settings-section { margin-bottom: 28px; }
+  .settings-title { font-size: 13px; font-weight: 600; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+  .settings-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .settings-row:last-child { border-bottom: none; }
+  .settings-label strong { font-size: 13px; display: block; margin-bottom: 2px; }
+  .settings-label span { font-size: 11px; color: var(--muted); }
+  .settings-input {
+    background: var(--surface2); border: 1px solid var(--border2);
+    border-radius: 6px; padding: 7px 12px; font-size: 12px;
+    font-family: var(--mono); color: var(--text); outline: none; width: 200px;
+  }
+  .toggle {
+    width: 36px; height: 20px; border-radius: 10px; border: none;
+    background: var(--border2); position: relative; cursor: pointer; transition: background .2s;
+  }
+  .toggle.on { background: var(--accent); }
+  .toggle::after {
+    content: ''; position: absolute; width: 14px; height: 14px;
+    border-radius: 50%; background: white; top: 3px; left: 3px; transition: left .2s;
+  }
+  .toggle.on::after { left: 19px; }
+  .save-btn {
+    background: var(--accent); color: white; border: none;
+    padding: 9px 20px; border-radius: 7px; font-size: 13px;
+    font-family: var(--font); cursor: pointer; margin-top: 16px;
+    transition: background .15s;
+  }
+  .save-btn:hover { background: var(--accent-l); }
 </style>
 </head>
 <body>
@@ -219,20 +304,20 @@
     </div>
 
     <nav class="nav">
-      <button class="nav-item active">
+      <button class="nav-item active" onclick="switchPage('dashboard', this)">
         <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="8" width="3" height="7"/><rect x="6" y="5" width="3" height="10"/><rect x="11" y="2" width="3" height="13"/></svg>
         Dashboard
       </button>
-      <button class="nav-item">
+      <button class="nav-item" onclick="switchPage('ordini', this)">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5 8h6M5 11h4"/></svg>
         Ordini
       </button>
-      <button class="nav-item">
+      <button class="nav-item" onclick="switchPage('clienti', this)">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="6" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
         Clienti
       </button>
-      <button class="nav-item">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v4M8 10v4M2 8h4M10 8h4"/></svg>
+      <button class="nav-item" onclick="switchPage('impostazioni', this)">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.2 3.2l1.4 1.4M11.4 11.4l1.4 1.4M3.2 12.8l1.4-1.4M11.4 4.6l1.4-1.4"/></svg>
         Impostazioni
       </button>
     </nav>
@@ -254,10 +339,10 @@
   <main class="main">
     <div class="topbar">
       <div>
-        <div class="page-title">Dashboard</div>
+        <div class="page-title" id="pageTitle">Dashboard</div>
         <div class="page-sub aggiornato" id="aggiornato">Caricamento in corso...</div>
       </div>
-      <button class="refresh-btn" onclick="caricaDati()">
+      <button class="refresh-btn" onclick="refreshPage()">
         <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
           <path d="M1 7a6 6 0 0 1 10.5-4M13 7a6 6 0 0 1-10.5 4"/><path d="M11 3l.5 2.5-2.5.5"/><path d="M3 11l-.5-2.5 2.5-.5"/>
         </svg>
@@ -265,65 +350,162 @@
       </button>
     </div>
 
-    <div class="loader" id="loader">
-      <div class="spinner"></div>
-      <p>Elaborazione dati in corso...</p>
+    <!-- DASHBOARD PAGE -->
+    <div id="page-dashboard" class="page active">
+      <div class="loader" id="loader">
+        <div class="spinner"></div>
+        <p>Elaborazione dati in corso...</p>
+      </div>
+      <div id="dashboard">
+        <div class="metrics" id="metrics"></div>
+        <div class="grid-full panel" style="margin-bottom:16px;">
+          <div class="panel-head">
+            <div><div class="panel-title">Previsione domanda</div><div class="panel-sub">Storico + previsione AI — prossimi 3 mesi</div></div>
+            <div class="chart-tabs" id="chartTabs"></div>
+          </div>
+          <div class="chart-legend">
+            <span class="cl-item"><span class="cl-dot" style="background:#2563EB"></span>Vendite reali</span>
+            <span class="cl-item"><span class="cl-dot" style="background:#2563EB;opacity:.35"></span>Previsione AI</span>
+          </div>
+          <div class="chart-wrap"><canvas id="demandChart" role="img" aria-label="Previsione domanda prodotti"></canvas></div>
+        </div>
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-head">
+              <div><div class="panel-title">Scorte</div><div class="panel-sub">Giorni rimanenti stimati</div></div>
+              <span class="badge badge-red" id="scorte-badge"></span>
+            </div>
+            <table class="data-table" id="scorteTable"></table>
+          </div>
+          <div class="panel">
+            <div class="panel-head">
+              <div><div class="panel-title">Clienti a rischio</div><div class="panel-sub">Probabilità abbandono 30gg</div></div>
+              <span class="badge badge-amber" id="churn-badge"></span>
+            </div>
+            <div class="churn-list" id="churnList"></div>
+          </div>
+        </div>
+        <div class="panel grid-full">
+          <div class="panel-head">
+            <div><div class="panel-title">Raccomandazioni prodotto</div><div class="panel-sub">Coppie di prodotti spesso acquistati insieme — ordinati per lift</div></div>
+            <span class="badge badge-green">AI</span>
+          </div>
+          <div class="rec-list" id="recList"></div>
+        </div>
+      </div>
     </div>
 
-    <div id="dashboard">
-      <!-- METRICS -->
-      <div class="metrics" id="metrics"></div>
-
-      <!-- ROW 1 -->
-      <div class="grid-full panel" style="margin-bottom:16px;">
+    <!-- ORDINI PAGE -->
+    <div id="page-ordini" class="page">
+      <div class="panel" style="margin-bottom:16px;">
         <div class="panel-head">
-          <div><div class="panel-title">Previsione domanda</div><div class="panel-sub">Storico + previsione AI — prossimi 3 mesi</div></div>
-          <div class="chart-tabs" id="chartTabs"></div>
+          <div><div class="panel-title">Tutti gli ordini</div><div class="panel-sub" id="ordini-sub">Ultimi 100 ordini</div></div>
+          <span class="badge badge-blue" id="ordini-badge"></span>
         </div>
-        <div class="chart-legend">
-          <span class="cl-item"><span class="cl-dot" style="background:#2563EB"></span>Vendite reali</span>
-          <span class="cl-item"><span class="cl-dot" style="background:#2563EB;opacity:.35"></span>Previsione AI</span>
+        <div class="search-bar">
+          <input class="search-input" id="ordiniSearch" placeholder="Cerca per cliente o prodotto..." oninput="filtraOrdini(this.value)">
         </div>
-        <div class="chart-wrap"><canvas id="demandChart" role="img" aria-label="Previsione domanda prodotti"></canvas></div>
-      </div>
-
-      <div class="grid-2">
-        <!-- SCORTE -->
-        <div class="panel">
-          <div class="panel-head">
-            <div><div class="panel-title">Scorte</div><div class="panel-sub">Giorni rimanenti stimati</div></div>
-            <span class="badge badge-red" id="scorte-badge"></span>
-          </div>
-          <table class="data-table" id="scorteTable"></table>
+        <div class="table-wrap">
+          <table class="full-table" id="ordiniTable">
+            <thead><tr><th>ID</th><th>Data</th><th>Cliente</th><th>Prodotto</th><th style="text-align:right">Qtà</th><th style="text-align:right">Ricavo</th></tr></thead>
+            <tbody id="ordiniBody"></tbody>
+          </table>
         </div>
-
-        <!-- CHURN -->
-        <div class="panel">
-          <div class="panel-head">
-            <div><div class="panel-title">Clienti a rischio</div><div class="panel-sub">Probabilità abbandono 30gg</div></div>
-            <span class="badge badge-amber" id="churn-badge"></span>
-          </div>
-          <div class="churn-list" id="churnList"></div>
-        </div>
-      </div>
-
-      <!-- RECS -->
-      <div class="panel grid-full">
-        <div class="panel-head">
-          <div><div class="panel-title">Raccomandazioni prodotto</div><div class="panel-sub">Coppie di prodotti spesso acquistati insieme — ordinati per lift</div></div>
-          <span class="badge badge-green">AI</span>
-        </div>
-        <div class="rec-list" id="recList"></div>
       </div>
     </div>
+
+    <!-- CLIENTI PAGE -->
+    <div id="page-clienti" class="page">
+      <div class="panel" style="margin-bottom:16px;">
+        <div class="panel-head">
+          <div><div class="panel-title">Tutti i clienti</div><div class="panel-sub" id="clienti-sub">Analisi RFM completa</div></div>
+          <span class="badge badge-blue" id="clienti-badge"></span>
+        </div>
+        <div class="search-bar">
+          <input class="search-input" id="clientiSearch" placeholder="Cerca cliente..." oninput="filtraClienti(this.value)">
+        </div>
+        <div class="client-grid" id="clientiGrid"></div>
+      </div>
+    </div>
+
+    <!-- IMPOSTAZIONI PAGE -->
+    <div id="page-impostazioni" class="page">
+      <div class="panel" style="max-width:600px;">
+        <div class="settings-section">
+          <div class="settings-title">Store</div>
+          <div class="settings-row">
+            <div class="settings-label"><strong>Nome store</strong><span>Il nome del tuo e-commerce</span></div>
+            <input class="settings-input" value="Demo Store" id="storeName">
+          </div>
+          <div class="settings-row">
+            <div class="settings-label"><strong>Soglia scorte critiche</strong><span>Giorni rimanenti sotto cui scattare l'alert</span></div>
+            <input class="settings-input" value="14" id="sogliaSco" type="number">
+          </div>
+          <div class="settings-row">
+            <div class="settings-label"><strong>Finestra churn</strong><span>Giorni di inattività per considerare un cliente a rischio</span></div>
+            <input class="settings-input" value="30" id="finestraChurn" type="number">
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-title">Notifiche</div>
+          <div class="settings-row">
+            <div class="settings-label"><strong>Alert scorte via email</strong><span>Ricevi un'email quando una scorta è critica</span></div>
+            <button class="toggle on" id="toggleSco" onclick="this.classList.toggle('on')"></button>
+          </div>
+          <div class="settings-row">
+            <div class="settings-label"><strong>Report settimanale</strong><span>Riepilogo ogni lunedì mattina</span></div>
+            <button class="toggle on" id="toggleReport" onclick="this.classList.toggle('on')"></button>
+          </div>
+          <div class="settings-row">
+            <div class="settings-label"><strong>Alert churn clienti</strong><span>Notifica quando un cliente entra in zona rischio</span></div>
+            <button class="toggle" id="toggleChurn" onclick="this.classList.toggle('on')"></button>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-title">Integrazione</div>
+          <div class="settings-row">
+            <div class="settings-label"><strong>Shopify API Key</strong><span>Collega il tuo store Shopify</span></div>
+            <input class="settings-input" placeholder="sk_live_..." type="password">
+          </div>
+          <div class="settings-row">
+            <div class="settings-label"><strong>WooCommerce URL</strong><span>URL del tuo store WooCommerce</span></div>
+            <input class="settings-input" placeholder="https://miostore.it">
+          </div>
+        </div>
+        <button class="save-btn" onclick="salvaimpostazioni()">Salva impostazioni</button>
+      </div>
+    </div>
+
   </main>
 </div>
 
 <script>
 let datiGlobali = null;
+let ordiniGlobali = [];
+let clientiGlobali = [];
 let demandChart = null;
-let prodottoAttivo = null;
+let paginaAttiva = 'dashboard';
 
+// ── NAVIGAZIONE ──
+function switchPage(page, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  btn.classList.add('active');
+  paginaAttiva = page;
+  const titles = { dashboard: 'Dashboard', ordini: 'Ordini', clienti: 'Clienti', impostazioni: 'Impostazioni' };
+  document.getElementById('pageTitle').textContent = titles[page];
+  if (page === 'ordini' && ordiniGlobali.length === 0) caricaOrdini();
+  if (page === 'clienti' && clientiGlobali.length === 0) caricaClienti();
+}
+
+function refreshPage() {
+  if (paginaAttiva === 'dashboard') caricaDati();
+  else if (paginaAttiva === 'ordini') caricaOrdini();
+  else if (paginaAttiva === 'clienti') caricaClienti();
+}
+
+// ── DASHBOARD ──
 async function caricaDati() {
   document.getElementById('loader').style.display = 'flex';
   document.getElementById('dashboard').style.display = 'none';
@@ -334,14 +516,12 @@ async function caricaDati() {
     datiGlobali = d;
     renderDashboard(d);
   } catch(e) {
-    document.getElementById('loader').innerHTML = `<p style="color:#F87171">Errore: ${e.message}</p><p style="color:var(--muted);margin-top:8px;font-size:11px">Assicurati di avere ordini.csv nella cartella del progetto</p>`;
+    document.getElementById('loader').innerHTML = `<p style="color:#F87171">Errore: ${e.message}</p>`;
   }
 }
 
 function renderDashboard(d) {
   document.getElementById('aggiornato').textContent = `Aggiornato il ${d.aggiornato}`;
-
-  // Metrics
   const m = d.metriche;
   const critici = d.scorte.filter(s => s.stato === 'CRITICO').length;
   const churnAlto = d.churn.filter(c => c.pct >= 70).length;
@@ -351,114 +531,163 @@ function renderDashboard(d) {
     <div class="metric-card"><div class="metric-label">Scorte critiche</div><div class="metric-value">${critici}</div><div class="metric-delta down">esaurimento &lt;14gg</div></div>
     <div class="metric-card"><div class="metric-label">Rischio churn</div><div class="metric-value">${churnAlto}</div><div class="metric-delta down">probabilità &gt;70%</div></div>
   `;
-
-  // Chart tabs
   const prodotti = Object.keys(d.previsioni);
-  prodottoAttivo = prodotti[0];
-  document.getElementById('chartTabs').innerHTML = prodotti.slice(0, 4).map((p, i) =>
-    `<button class="ctab${i===0?' active':''}" onclick="switchProdotto('${p}', this)">${p.split(' ').slice(0,2).join(' ')}</button>`
+  document.getElementById('chartTabs').innerHTML = prodotti.slice(0,4).map((p,i) =>
+    `<button class="ctab${i===0?' active':''}" onclick="switchProdotto('${p}',this)">${p.split(' ').slice(0,2).join(' ')}</button>`
   ).join('');
-  renderChart(d.previsioni[prodottoAttivo]);
-
-  // Scorte
+  renderChart(d.previsioni[prodotti[0]]);
   const criticiN = d.scorte.filter(s => s.stato !== 'OK').length;
   document.getElementById('scorte-badge').textContent = `${criticiN} alert`;
   document.getElementById('scorteTable').innerHTML = `
     <thead><tr><th>Prodotto</th><th style="text-align:right">Unità</th><th style="text-align:right">Giorni</th><th>Stato</th></tr></thead>
-    <tbody>${d.scorte.slice(0,6).map(s => `
-      <tr>
-        <td>${s.prodotto}</td>
-        <td style="text-align:right;font-family:var(--mono)">${s.unita}</td>
-        <td style="text-align:right;font-family:var(--mono)">${s.giorni < 999 ? s.giorni : '—'}</td>
-        <td><span class="pill ${s.stato==='CRITICO'?'pill-red':s.stato==='ATTENZIONE'?'pill-amber':'pill-green'}">${s.stato}</span></td>
-      </tr>`).join('')}
-    </tbody>
-  `;
-
-  // Churn
+    <tbody>${d.scorte.slice(0,6).map(s => `<tr>
+      <td>${s.prodotto}</td>
+      <td style="text-align:right;font-family:var(--mono)">${s.unita}</td>
+      <td style="text-align:right;font-family:var(--mono)">${s.giorni < 999 ? s.giorni : '—'}</td>
+      <td><span class="pill ${s.stato==='CRITICO'?'pill-red':s.stato==='ATTENZIONE'?'pill-amber':'pill-green'}">${s.stato}</span></td>
+    </tr>`).join('')}</tbody>`;
   document.getElementById('churn-badge').textContent = `${d.churn.length} clienti`;
   document.getElementById('churnList').innerHTML = d.churn.slice(0,5).map(c => {
     const initials = c.customer.split('.').slice(0,2).map(s=>s[0].toUpperCase()).join('');
     const col = c.pct >= 70 ? '#F87171' : c.pct >= 50 ? '#FCD34D' : '#4ADE80';
-    return `
-      <div class="churn-row">
-        <div class="avatar">${initials}</div>
-        <div class="churn-info">
-          <div class="churn-name">${c.customer}</div>
-          <div class="churn-detail">Inattivo da ${c.recency}gg · LTV €${Math.round(c.ltv)}</div>
-        </div>
-        <div class="risk-wrap">
-          <div class="risk-pct" style="color:${col}">${c.pct}%</div>
-          <div class="risk-bar-bg"><div class="risk-bar-fill" style="width:${c.pct}%;background:${col}"></div></div>
-        </div>
-      </div>
-    `;
+    return `<div class="churn-row">
+      <div class="avatar">${initials}</div>
+      <div class="churn-info"><div class="churn-name">${c.customer}</div><div class="churn-detail">Inattivo da ${c.recency}gg · LTV €${Math.round(c.ltv)}</div></div>
+      <div class="risk-wrap"><div class="risk-pct" style="color:${col}">${c.pct}%</div><div class="risk-bar-bg"><div class="risk-bar-fill" style="width:${c.pct}%;background:${col}"></div></div></div>
+    </div>`;
   }).join('');
-
-  // Recs
   document.getElementById('recList').innerHTML = d.raccomandazioni.map((r,i) => `
-    <div class="rec-row">
-      <div class="rec-num">${i+1}</div>
-      <div class="rec-info">
-        <div class="rec-title">${r.prodotto_a} → ${r.prodotto_b}</div>
-        <div class="rec-sub">Co-acquistati ${r.co_acquisti} volte</div>
-      </div>
-      <div class="rec-lift">${r.lift}x lift</div>
-    </div>
-  `).join('');
-
+    <div class="rec-row"><div class="rec-num">${i+1}</div>
+    <div class="rec-info"><div class="rec-title">${r.prodotto_a} → ${r.prodotto_b}</div><div class="rec-sub">Co-acquistati ${r.co_acquisti} volte</div></div>
+    <div class="rec-lift">${r.lift}x lift</div></div>`).join('');
   document.getElementById('loader').style.display = 'none';
   document.getElementById('dashboard').style.display = 'block';
 }
 
 function renderChart(dati) {
-  const labels = [
-    ...dati.storico.map(s => s.mese.slice(0,7)),
-    ...dati.previsioni.map(p => p.mese + ' ▸')
-  ];
-  const actual   = [...dati.storico.map(s => s.quantita), ...dati.previsioni.map(() => null)];
-  const forecast = [...dati.storico.map(() => null), dati.storico.at(-1).quantita, ...dati.previsioni.map(p => p.quantita_prevista)];
-  forecast[dati.storico.length - 1] = dati.storico.at(-1).quantita;
-
+  const labels = [...dati.storico.map(s=>s.mese.slice(0,7)), ...dati.previsioni.map(p=>p.mese+' ▸')];
+  const actual  = [...dati.storico.map(s=>s.quantita), ...dati.previsioni.map(()=>null)];
+  const forecast= [...dati.storico.map(()=>null), dati.storico.at(-1).quantita, ...dati.previsioni.map(p=>p.quantita_prevista)];
+  forecast[dati.storico.length-1] = dati.storico.at(-1).quantita;
   const ctx = document.getElementById('demandChart').getContext('2d');
   if (demandChart) demandChart.destroy();
   demandChart = new Chart(ctx, {
     type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        { label: 'Reale', data: actual, backgroundColor: '#2563EB', borderRadius: 4, borderSkipped: false },
-        { label: 'Previsto', data: forecast, backgroundColor: 'rgba(37,99,235,.28)', borderRadius: 4, borderSkipped: false }
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
-      scales: {
-        x: { grid: { display: false }, ticks: { color: '#555', font: { size: 11, family: 'DM Mono' } }, border: { display: false } },
-        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { size: 11, family: 'DM Mono' } }, border: { display: false } }
+    data: { labels, datasets: [
+      { label:'Reale', data:actual, backgroundColor:'#2563EB', borderRadius:4, borderSkipped:false },
+      { label:'Previsto', data:forecast, backgroundColor:'rgba(37,99,235,.28)', borderRadius:4, borderSkipped:false }
+    ]},
+    options: { responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{mode:'index',intersect:false} },
+      scales:{
+        x:{ grid:{display:false}, ticks:{color:'#555',font:{size:11,family:'DM Mono'}}, border:{display:false} },
+        y:{ grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#555',font:{size:11,family:'DM Mono'}}, border:{display:false} }
       }
     }
   });
 }
 
 function switchProdotto(nome, btn) {
-  document.querySelectorAll('.ctab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.ctab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
   renderChart(datiGlobali.previsioni[nome]);
 }
 
+// ── ORDINI ──
+async function caricaOrdini() {
+  document.getElementById('ordiniBody').innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:24px">Caricamento...</td></tr>';
+  try {
+    const res = await fetch('/api/ordini');
+    const d = await res.json();
+    ordiniGlobali = d.ordini;
+    document.getElementById('ordini-badge').textContent = `${d.totale_ordini} totali`;
+    document.getElementById('ordini-sub').textContent = `Totale ricavi: €${d.totale.toLocaleString('it-IT')} · AOV medio: €${d.media_ordine}`;
+    renderOrdini(ordiniGlobali);
+  } catch(e) {
+    document.getElementById('ordiniBody').innerHTML = `<tr><td colspan="6" style="color:#F87171;padding:16px">Errore: ${e.message}</td></tr>`;
+  }
+}
+
+function renderOrdini(lista) {
+  document.getElementById('ordiniBody').innerHTML = lista.map(o => `<tr>
+    <td style="font-family:var(--mono);font-size:11px;color:var(--muted)">${o.order_id}</td>
+    <td style="font-family:var(--mono);font-size:11px">${o.date}</td>
+    <td>${o.customer}</td>
+    <td>${o.product}</td>
+    <td style="text-align:right;font-family:var(--mono)">${o.quantity}</td>
+    <td style="text-align:right;font-family:var(--mono)">€${o.revenue.toFixed(2)}</td>
+  </tr>`).join('');
+}
+
+function filtraOrdini(q) {
+  const filtrati = ordiniGlobali.filter(o =>
+    o.customer.toLowerCase().includes(q.toLowerCase()) ||
+    o.product.toLowerCase().includes(q.toLowerCase())
+  );
+  renderOrdini(filtrati);
+}
+
+// ── CLIENTI ──
+async function caricaClienti() {
+  document.getElementById('clientiGrid').innerHTML = '<p style="color:var(--muted);font-size:13px;padding:16px">Caricamento...</p>';
+  try {
+    const res = await fetch('/api/clienti');
+    const d = await res.json();
+    clientiGlobali = d.clienti;
+    document.getElementById('clienti-badge').textContent = `${d.totale_clienti} clienti`;
+    renderClienti(clientiGlobali);
+  } catch(e) {
+    document.getElementById('clientiGrid').innerHTML = `<p style="color:#F87171">Errore: ${e.message}</p>`;
+  }
+}
+
+function renderClienti(lista) {
+  document.getElementById('clientiGrid').innerHTML = lista.map(c => {
+    const initials = c.customer.split('.').slice(0,2).map(s=>s[0].toUpperCase()).join('');
+    const col = c.churn_pct >= 70 ? '#F87171' : c.churn_pct >= 50 ? '#FCD34D' : '#4ADE80';
+    return `<div class="client-card">
+      <div class="client-card-top">
+        <div class="client-avatar">${initials}</div>
+        <div><div class="client-email">${c.customer}</div><div class="client-since">Ultimo acquisto: ${c.ultimo_acquisto}</div></div>
+      </div>
+      <div class="client-stats">
+        <div><div class="client-stat-val">€${Math.round(c.spesa_totale)}</div><div class="client-stat-label">LTV</div></div>
+        <div><div class="client-stat-val">${c.n_ordini}</div><div class="client-stat-label">Ordini</div></div>
+        <div><div class="client-stat-val">${c.recency}gg</div><div class="client-stat-label">Inattivo</div></div>
+      </div>
+      <div class="client-risk">
+        <div class="client-risk-bar"><div class="client-risk-fill" style="width:${c.churn_pct}%;background:${col}"></div></div>
+        <div class="client-risk-pct" style="color:${col}">${c.churn_pct}% churn</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filtraClienti(q) {
+  const filtrati = clientiGlobali.filter(c => c.customer.toLowerCase().includes(q.toLowerCase()));
+  renderClienti(filtrati);
+}
+
+// ── IMPOSTAZIONI ──
+function salvaimpostazioni() {
+  const btn = event.target;
+  btn.textContent = '✓ Salvato';
+  setTimeout(() => btn.textContent = 'Salva impostazioni', 2000);
+}
+
+// ── UPLOAD ──
 async function uploadFile(input) {
   const file = input.files[0];
   if (!file) return;
   const fd = new FormData();
   fd.append('file', file);
-  const res = await fetch('/api/upload', { method: 'POST', body: fd });
+  const res = await fetch('/api/upload', { method:'POST', body:fd });
   const data = await res.json();
   if (data.ok) {
     const s = document.getElementById('uploadStatus');
     s.style.display = 'block';
     s.textContent = `✓ ${data.righe} righe caricate`;
+    ordiniGlobali = []; clientiGlobali = [];
     setTimeout(() => caricaDati(), 500);
   }
 }
