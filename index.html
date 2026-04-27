@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Previso — Analytics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #080808;
+    --surface:   #111111;
+    --surface2:  #181818;
+    --border:    rgba(255,255,255,0.07);
+    --border2:   rgba(255,255,255,0.13);
+    --text:      #F0F0F0;
+    --muted:     #666;
+    --accent:    #2563EB;
+    --accent-l:  #3B82F6;
+    --green:     #16A34A;
+    --amber:     #D97706;
+    --red:       #DC2626;
+    --radius:    10px;
+    --font:      'Syne', sans-serif;
+    --mono:      'DM Mono', monospace;
+  }
+
+  html { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; }
+  body { min-height: 100vh; }
+
+  /* ── LAYOUT ── */
+  .shell { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 28px 20px;
+    display: flex; flex-direction: column; gap: 32px;
+    position: sticky; top: 0; height: 100vh;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-icon {
+    width: 32px; height: 32px; background: var(--accent);
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  }
+  .logo-icon svg { width: 18px; height: 18px; }
+  .logo-name { font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
+  .logo-name span { color: var(--accent-l); }
+  .nav { display: flex; flex-direction: column; gap: 2px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; border-radius: 7px; cursor: pointer;
+    font-size: 13px; color: var(--muted); transition: all .15s;
+    border: none; background: none; text-align: left; width: 100%;
+  }
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active { background: var(--surface2); color: var(--text); font-weight: 500; }
+  .nav-item svg { width: 15px; height: 15px; opacity: .7; flex-shrink: 0; }
+  .sidebar-bottom { margin-top: auto; }
+  .upload-zone {
+    border: 1px dashed var(--border2); border-radius: var(--radius);
+    padding: 16px; text-align: center; cursor: pointer;
+    transition: border-color .2s;
+  }
+  .upload-zone:hover { border-color: var(--accent); }
+  .upload-zone p { font-size: 11px; color: var(--muted); margin-top: 6px; }
+  .upload-zone strong { font-size: 12px; color: var(--text); }
+  #fileInput { display: none; }
+  .upload-status { font-size: 11px; color: var(--green); margin-top: 8px; text-align: center; display: none; }
+
+  /* ── MAIN ── */
+  .main { padding: 32px 36px; overflow-y: auto; }
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 32px;
+  }
+  .page-title { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+  .page-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .refresh-btn {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--surface); border: 1px solid var(--border2);
+    color: var(--text); border-radius: 7px; padding: 8px 14px;
+    font-family: var(--font); font-size: 12px; cursor: pointer;
+    transition: background .15s;
+  }
+  .refresh-btn:hover { background: var(--surface2); }
+  .refresh-btn svg { width: 13px; height: 13px; }
+
+  /* ── METRICS ── */
+  .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+  .metric-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 18px 20px;
+    animation: fadeUp .4s ease both;
+  }
+  .metric-card:nth-child(1) { animation-delay: .05s; }
+  .metric-card:nth-child(2) { animation-delay: .10s; }
+  .metric-card:nth-child(3) { animation-delay: .15s; }
+  .metric-card:nth-child(4) { animation-delay: .20s; }
+  .metric-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; }
+  .metric-value { font-family: var(--mono); font-size: 26px; font-weight: 500; margin-top: 8px; letter-spacing: -1px; }
+  .metric-delta { font-size: 11px; margin-top: 5px; }
+  .up { color: #4ADE80; } .down { color: #F87171; }
+
+  /* ── GRID ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .grid-full { margin-bottom: 16px; }
+
+  /* ── PANEL ── */
+  .panel {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px 22px;
+    animation: fadeUp .5s ease both;
+  }
+  .panel-head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+  .panel-title { font-size: 13px; font-weight: 600; }
+  .panel-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .badge {
+    font-size: 10px; padding: 3px 8px; border-radius: 4px;
+    font-family: var(--mono); font-weight: 500;
+  }
+  .badge-blue { background: rgba(37,99,235,.2); color: var(--accent-l); }
+  .badge-green { background: rgba(22,163,74,.15); color: #4ADE80; }
+  .badge-red { background: rgba(220,38,38,.15); color: #F87171; }
+  .badge-amber { background: rgba(217,119,6,.15); color: #FCD34D; }
+
+  /* ── CHART ── */
+  .chart-wrap { position: relative; width: 100%; height: 200px; }
+  .chart-tabs { display: flex; gap: 4px; margin-bottom: 14px; }
+  .ctab {
+    font-size: 11px; padding: 4px 10px; border-radius: 5px;
+    border: 1px solid var(--border); color: var(--muted);
+    background: none; cursor: pointer; font-family: var(--font);
+    transition: all .15s;
+  }
+  .ctab.active { background: var(--surface2); border-color: var(--border2); color: var(--text); }
+  .chart-legend { display: flex; gap: 14px; margin-bottom: 10px; }
+  .cl-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
+  .cl-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+  /* ── TABLE ── */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .data-table th {
+    font-size: 10px; font-weight: 500; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .5px;
+    padding: 0 10px 10px 0; border-bottom: 1px solid var(--border); text-align: left;
+  }
+  .data-table td { padding: 10px 10px 10px 0; border-bottom: 1px solid var(--border); color: var(--text); }
+  .data-table tr:last-child td { border-bottom: none; }
+  .pill {
+    display: inline-block; font-size: 10px; padding: 2px 8px;
+    border-radius: 20px; font-weight: 500; font-family: var(--mono);
+  }
+  .pill-red    { background: rgba(220,38,38,.15); color: #F87171; }
+  .pill-amber  { background: rgba(217,119,6,.15);  color: #FCD34D; }
+  .pill-green  { background: rgba(22,163,74,.15);  color: #4ADE80; }
+
+  /* ── CHURN ── */
+  .churn-list { display: flex; flex-direction: column; gap: 8px; }
+  .churn-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px; border-radius: 7px; background: var(--surface2);
+  }
+  .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(37,99,235,.2); color: var(--accent-l);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; flex-shrink: 0; font-family: var(--mono);
+  }
+  .churn-info { flex: 1; min-width: 0; }
+  .churn-name { font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .churn-detail { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .risk-wrap { flex-shrink: 0; text-align: right; }
+  .risk-pct { font-family: var(--mono); font-size: 13px; font-weight: 500; }
+  .risk-bar-bg { height: 3px; width: 80px; background: var(--border2); border-radius: 2px; margin-top: 4px; }
+  .risk-bar-fill { height: 100%; border-radius: 2px; }
+
+  /* ── RECS ── */
+  .rec-list { display: flex; flex-direction: column; gap: 8px; }
+  .rec-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px; border-radius: 7px;
+    border: 1px solid var(--border);
+  }
+  .rec-num { font-family: var(--mono); font-size: 11px; color: var(--muted); width: 16px; }
+  .rec-info { flex: 1; }
+  .rec-title { font-size: 12px; font-weight: 500; }
+  .rec-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .rec-lift { font-family: var(--mono); font-size: 12px; color: #4ADE80; font-weight: 500; flex-shrink: 0; }
+
+  /* ── LOADER ── */
+  .loader { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60vh; gap: 16px; }
+  .spinner { width: 32px; height: 32px; border: 2px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; }
+  .loader p { font-size: 13px; color: var(--muted); }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  #dashboard { display: none; }
+  .aggiornato { font-size: 11px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 18 18" fill="none">
+          <path d="M2 14 L5.5 8 L9 10.5 L12.5 5 L16 7" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="16" cy="5" r="2" fill="white"/>
+        </svg>
+      </div>
+      <div class="logo-name">pre<span>viso</span></div>
+    </div>
+
+    <nav class="nav">
+      <button class="nav-item active">
+        <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="8" width="3" height="7"/><rect x="6" y="5" width="3" height="10"/><rect x="11" y="2" width="3" height="13"/></svg>
+        Dashboard
+      </button>
+      <button class="nav-item">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5 8h6M5 11h4"/></svg>
+        Ordini
+      </button>
+      <button class="nav-item">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="6" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
+        Clienti
+      </button>
+      <button class="nav-item">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v4M8 10v4M2 8h4M10 8h4"/></svg>
+        Impostazioni
+      </button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#666" stroke-width="1.5">
+          <path d="M10 13V7M7 10l3-3 3 3"/><rect x="3" y="3" width="14" height="14" rx="3"/>
+        </svg>
+        <strong>Carica CSV</strong>
+        <p>Trascina o clicca per caricare i tuoi ordini</p>
+        <input type="file" id="fileInput" accept=".csv" onchange="uploadFile(this)">
+      </div>
+      <div class="upload-status" id="uploadStatus">✓ File caricato correttamente</div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <div class="page-title">Dashboard</div>
+        <div class="page-sub aggiornato" id="aggiornato">Caricamento in corso...</div>
+      </div>
+      <button class="refresh-btn" onclick="caricaDati()">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M1 7a6 6 0 0 1 10.5-4M13 7a6 6 0 0 1-10.5 4"/><path d="M11 3l.5 2.5-2.5.5"/><path d="M3 11l-.5-2.5 2.5-.5"/>
+        </svg>
+        Aggiorna
+      </button>
+    </div>
+
+    <div class="loader" id="loader">
+      <div class="spinner"></div>
+      <p>Elaborazione dati in corso...</p>
+    </div>
+
+    <div id="dashboard">
+      <!-- METRICS -->
+      <div class="metrics" id="metrics"></div>
+
+      <!-- ROW 1 -->
+      <div class="grid-full panel" style="margin-bottom:16px;">
+        <div class="panel-head">
+          <div><div class="panel-title">Previsione domanda</div><div class="panel-sub">Storico + previsione AI — prossimi 3 mesi</div></div>
+          <div class="chart-tabs" id="chartTabs"></div>
+        </div>
+        <div class="chart-legend">
+          <span class="cl-item"><span class="cl-dot" style="background:#2563EB"></span>Vendite reali</span>
+          <span class="cl-item"><span class="cl-dot" style="background:#2563EB;opacity:.35"></span>Previsione AI</span>
+        </div>
+        <div class="chart-wrap"><canvas id="demandChart" role="img" aria-label="Previsione domanda prodotti"></canvas></div>
+      </div>
+
+      <div class="grid-2">
+        <!-- SCORTE -->
+        <div class="panel">
+          <div class="panel-head">
+            <div><div class="panel-title">Scorte</div><div class="panel-sub">Giorni rimanenti stimati</div></div>
+            <span class="badge badge-red" id="scorte-badge"></span>
+          </div>
+          <table class="data-table" id="scorteTable"></table>
+        </div>
+
+        <!-- CHURN -->
+        <div class="panel">
+          <div class="panel-head">
+            <div><div class="panel-title">Clienti a rischio</div><div class="panel-sub">Probabilità abbandono 30gg</div></div>
+            <span class="badge badge-amber" id="churn-badge"></span>
+          </div>
+          <div class="churn-list" id="churnList"></div>
+        </div>
+      </div>
+
+      <!-- RECS -->
+      <div class="panel grid-full">
+        <div class="panel-head">
+          <div><div class="panel-title">Raccomandazioni prodotto</div><div class="panel-sub">Coppie di prodotti spesso acquistati insieme — ordinati per lift</div></div>
+          <span class="badge badge-green">AI</span>
+        </div>
+        <div class="rec-list" id="recList"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+let datiGlobali = null;
+let demandChart = null;
+let prodottoAttivo = null;
+
+async function caricaDati() {
+  document.getElementById('loader').style.display = 'flex';
+  document.getElementById('dashboard').style.display = 'none';
+  try {
+    const res = await fetch('/api/analisi');
+    if (!res.ok) throw new Error(await res.text());
+    const d = await res.json();
+    datiGlobali = d;
+    renderDashboard(d);
+  } catch(e) {
+    document.getElementById('loader').innerHTML = `<p style="color:#F87171">Errore: ${e.message}</p><p style="color:var(--muted);margin-top:8px;font-size:11px">Assicurati di avere ordini.csv nella cartella del progetto</p>`;
+  }
+}
+
+function renderDashboard(d) {
+  document.getElementById('aggiornato').textContent = `Aggiornato il ${d.aggiornato}`;
+
+  // Metrics
+  const m = d.metriche;
+  const critici = d.scorte.filter(s => s.stato === 'CRITICO').length;
+  const churnAlto = d.churn.filter(c => c.pct >= 70).length;
+  document.getElementById('metrics').innerHTML = `
+    <div class="metric-card"><div class="metric-label">Ricavi (30gg)</div><div class="metric-value">€${m.ricavi_mese.toLocaleString('it-IT')}</div><div class="metric-delta up">↑ in crescita</div></div>
+    <div class="metric-card"><div class="metric-label">Clienti attivi</div><div class="metric-value">${m.clienti_totali}</div><div class="metric-delta" style="color:var(--muted)">totali nel CSV</div></div>
+    <div class="metric-card"><div class="metric-label">Scorte critiche</div><div class="metric-value">${critici}</div><div class="metric-delta down">esaurimento &lt;14gg</div></div>
+    <div class="metric-card"><div class="metric-label">Rischio churn</div><div class="metric-value">${churnAlto}</div><div class="metric-delta down">probabilità &gt;70%</div></div>
+  `;
+
+  // Chart tabs
+  const prodotti = Object.keys(d.previsioni);
+  prodottoAttivo = prodotti[0];
+  document.getElementById('chartTabs').innerHTML = prodotti.slice(0, 4).map((p, i) =>
+    `<button class="ctab${i===0?' active':''}" onclick="switchProdotto('${p}', this)">${p.split(' ').slice(0,2).join(' ')}</button>`
+  ).join('');
+  renderChart(d.previsioni[prodottoAttivo]);
+
+  // Scorte
+  const criticiN = d.scorte.filter(s => s.stato !== 'OK').length;
+  document.getElementById('scorte-badge').textContent = `${criticiN} alert`;
+  document.getElementById('scorteTable').innerHTML = `
+    <thead><tr><th>Prodotto</th><th style="text-align:right">Unità</th><th style="text-align:right">Giorni</th><th>Stato</th></tr></thead>
+    <tbody>${d.scorte.slice(0,6).map(s => `
+      <tr>
+        <td>${s.prodotto}</td>
+        <td style="text-align:right;font-family:var(--mono)">${s.unita}</td>
+        <td style="text-align:right;font-family:var(--mono)">${s.giorni < 999 ? s.giorni : '—'}</td>
+        <td><span class="pill ${s.stato==='CRITICO'?'pill-red':s.stato==='ATTENZIONE'?'pill-amber':'pill-green'}">${s.stato}</span></td>
+      </tr>`).join('')}
+    </tbody>
+  `;
+
+  // Churn
+  document.getElementById('churn-badge').textContent = `${d.churn.length} clienti`;
+  document.getElementById('churnList').innerHTML = d.churn.slice(0,5).map(c => {
+    const initials = c.customer.split('.').slice(0,2).map(s=>s[0].toUpperCase()).join('');
+    const col = c.pct >= 70 ? '#F87171' : c.pct >= 50 ? '#FCD34D' : '#4ADE80';
+    return `
+      <div class="churn-row">
+        <div class="avatar">${initials}</div>
+        <div class="churn-info">
+          <div class="churn-name">${c.customer}</div>
+          <div class="churn-detail">Inattivo da ${c.recency}gg · LTV €${Math.round(c.ltv)}</div>
+        </div>
+        <div class="risk-wrap">
+          <div class="risk-pct" style="color:${col}">${c.pct}%</div>
+          <div class="risk-bar-bg"><div class="risk-bar-fill" style="width:${c.pct}%;background:${col}"></div></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Recs
+  document.getElementById('recList').innerHTML = d.raccomandazioni.map((r,i) => `
+    <div class="rec-row">
+      <div class="rec-num">${i+1}</div>
+      <div class="rec-info">
+        <div class="rec-title">${r.prodotto_a} → ${r.prodotto_b}</div>
+        <div class="rec-sub">Co-acquistati ${r.co_acquisti} volte</div>
+      </div>
+      <div class="rec-lift">${r.lift}x lift</div>
+    </div>
+  `).join('');
+
+  document.getElementById('loader').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+}
+
+function renderChart(dati) {
+  const labels = [
+    ...dati.storico.map(s => s.mese.slice(0,7)),
+    ...dati.previsioni.map(p => p.mese + ' ▸')
+  ];
+  const actual   = [...dati.storico.map(s => s.quantita), ...dati.previsioni.map(() => null)];
+  const forecast = [...dati.storico.map(() => null), dati.storico.at(-1).quantita, ...dati.previsioni.map(p => p.quantita_prevista)];
+  forecast[dati.storico.length - 1] = dati.storico.at(-1).quantita;
+
+  const ctx = document.getElementById('demandChart').getContext('2d');
+  if (demandChart) demandChart.destroy();
+  demandChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Reale', data: actual, backgroundColor: '#2563EB', borderRadius: 4, borderSkipped: false },
+        { label: 'Previsto', data: forecast, backgroundColor: 'rgba(37,99,235,.28)', borderRadius: 4, borderSkipped: false }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: '#555', font: { size: 11, family: 'DM Mono' } }, border: { display: false } },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#555', font: { size: 11, family: 'DM Mono' } }, border: { display: false } }
+      }
+    }
+  });
+}
+
+function switchProdotto(nome, btn) {
+  document.querySelectorAll('.ctab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderChart(datiGlobali.previsioni[nome]);
+}
+
+async function uploadFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const fd = new FormData();
+  fd.append('file', file);
+  const res = await fetch('/api/upload', { method: 'POST', body: fd });
+  const data = await res.json();
+  if (data.ok) {
+    const s = document.getElementById('uploadStatus');
+    s.style.display = 'block';
+    s.textContent = `✓ ${data.righe} righe caricate`;
+    setTimeout(() => caricaDati(), 500);
+  }
+}
+
+caricaDati();
+</script>
+</body>
+</html>

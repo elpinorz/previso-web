@@ -1,0 +1,93 @@
+order_id,date,customer,product,price,quantity,revenue
+ORD00023,2025-02-17,luca.bianchi@email.it,Zaino trekking 45L,89.9,3,269.7
+ORD00022,2025-02-23,luca.bianchi@email.it,Borraccia termica,24.9,3,74.7
+ORD00007,2025-03-12,giulia.verdi@email.it,Cappello tecnico,14.9,1,14.9
+ORD00020,2025-03-13,luca.bianchi@email.it,Guanti trail running,19.9,1,19.9
+ORD00016,2025-03-17,luca.bianchi@email.it,Guanti trail running,19.9,3,59.7
+ORD00040,2025-03-24,antonio.mele@email.it,Zaino trekking 45L,89.9,3,269.7
+ORD00004,2025-04-08,marco.rossi@email.it,Cappello tecnico,14.9,1,14.9
+ORD00088,2025-04-13,matteo.colombo@email.it,Calze tecniche,9.9,2,19.8
+ORD00045,2025-04-21,antonio.mele@email.it,Borraccia termica,24.9,3,74.7
+ORD00069,2025-04-22,valentina.ricci@email.it,Zaino trekking 45L,89.9,1,89.9
+ORD00056,2025-04-24,davide.conti@email.it,Guanti trail running,19.9,2,39.8
+ORD00033,2025-05-02,sara.ferrari@email.it,Cappello tecnico,14.9,3,44.7
+ORD00014,2025-05-03,luca.bianchi@email.it,Zaino trekking 45L,89.9,2,179.8
+ORD00015,2025-05-03,luca.bianchi@email.it,Cappello tecnico,14.9,1,14.9
+ORD00024,2025-05-04,luca.bianchi@email.it,Calze tecniche,9.9,1,9.9
+ORD00039,2025-05-06,antonio.mele@email.it,Guanti trail running,19.9,1,19.9
+ORD00038,2025-05-06,antonio.mele@email.it,Pantaloni trail M,59.9,3,179.7
+ORD00090,2025-05-08,federica.lombardi@email.it,Zaino trekking 45L,89.9,2,179.8
+ORD00065,2025-05-28,francesco.greco@email.it,Pantaloni trail M,59.9,1,59.9
+ORD00059,2025-05-28,elena.marino@email.it,Calze tecniche,9.9,3,29.7
+ORD00085,2025-05-29,matteo.colombo@email.it,Pantaloni trail M,59.9,3,179.7
+ORD00091,2025-06-05,federica.lombardi@email.it,Guanti trail running,19.9,2,39.8
+ORD00081,2025-06-13,matteo.colombo@email.it,Pantaloni trail M,59.9,1,59.9
+ORD00082,2025-06-13,matteo.colombo@email.it,Guanti trail running,19.9,1,19.9
+ORD00030,2025-06-15,sara.ferrari@email.it,Cappello tecnico,14.9,3,44.7
+ORD00054,2025-06-19,davide.conti@email.it,Calze tecniche,9.9,3,29.7
+ORD00046,2025-06-21,antonio.mele@email.it,Calze tecniche,9.9,1,9.9
+ORD00048,2025-06-22,chiara.russo@email.it,Calze tecniche,9.9,1,9.9
+ORD00047,2025-06-22,chiara.russo@email.it,Scarpe running M42,49.9,3,149.7
+ORD00008,2025-06-23,giulia.verdi@email.it,Borraccia termica,24.9,1,24.9
+ORD00086,2025-06-26,matteo.colombo@email.it,Giacca impermeabile L,129.9,1,129.9
+ORD00035,2025-06-28,antonio.mele@email.it,Zaino trekking 45L,89.9,1,89.9
+ORD00057,2025-07-01,davide.conti@email.it,Pantaloni trail M,59.9,1,59.9
+ORD00058,2025-07-01,davide.conti@email.it,Guanti trail running,19.9,1,19.9
+ORD00031,2025-07-06,sara.ferrari@email.it,Giacca impermeabile L,129.9,2,259.8
+ORD00032,2025-07-06,sara.ferrari@email.it,Zaino trekking 45L,89.9,1,89.9
+ORD00043,2025-07-18,antonio.mele@email.it,Scarpe running M42,49.9,3,149.7
+ORD00077,2025-07-21,matteo.colombo@email.it,Calze tecniche,9.9,2,19.8
+ORD00019,2025-07-22,luca.bianchi@email.it,Borraccia termica,24.9,2,49.8
+ORD00068,2025-07-22,valentina.ricci@email.it,Scarpe running M42,49.9,3,149.7
+ORD00021,2025-07-27,luca.bianchi@email.it,Guanti trail running,19.9,1,19.9
+ORD00034,2025-08-05,sara.ferrari@email.it,Guanti trail running,19.9,1,19.9
+ORD00013,2025-08-15,giulia.verdi@email.it,Borraccia termica,24.9,1,24.9
+ORD00012,2025-08-19,giulia.verdi@email.it,Cappello tecnico,14.9,1,14.9
+ORD00011,2025-08-19,giulia.verdi@email.it,Zaino trekking 45L,89.9,1,89.9
+ORD00018,2025-09-06,luca.bianchi@email.it,Zaino trekking 45L,89.9,1,89.9
+ORD00026,2025-09-12,sara.ferrari@email.it,Scarpe running M42,49.9,1,49.9
+ORD00027,2025-09-17,sara.ferrari@email.it,Cappello tecnico,14.9,2,29.8
+ORD00029,2025-09-17,sara.ferrari@email.it,Calze tecniche,9.9,3,29.7
+ORD00067,2025-09-18,valentina.ricci@email.it,Cappello tecnico,14.9,2,29.8
+ORD00010,2025-09-18,giulia.verdi@email.it,Giacca impermeabile L,129.9,1,129.9
+ORD00071,2025-09-26,valentina.ricci@email.it,Cappello tecnico,14.9,1,14.9
+ORD00070,2025-09-26,valentina.ricci@email.it,Zaino trekking 45L,89.9,1,89.9
+ORD00062,2025-09-28,francesco.greco@email.it,Zaino trekking 45L,89.9,3,269.7
+ORD00063,2025-09-28,francesco.greco@email.it,Cappello tecnico,14.9,1,14.9
+ORD00042,2025-10-08,antonio.mele@email.it,Cappello tecnico,14.9,1,14.9
+ORD00025,2025-10-10,sara.ferrari@email.it,Calze tecniche,9.9,3,29.7
+ORD00003,2025-10-13,marco.rossi@email.it,Calze tecniche,9.9,1,9.9
+ORD00002,2025-10-13,marco.rossi@email.it,Giacca impermeabile L,129.9,3,389.7
+ORD00055,2025-10-14,davide.conti@email.it,Cappello tecnico,14.9,3,44.7
+ORD00041,2025-10-22,antonio.mele@email.it,Guanti trail running,19.9,1,19.9
+ORD00044,2025-10-24,antonio.mele@email.it,Giacca impermeabile L,129.9,3,389.7
+ORD00017,2025-10-26,luca.bianchi@email.it,Zaino trekking 45L,89.9,1,89.9
+ORD00073,2025-10-27,valentina.ricci@email.it,Pantaloni trail M,59.9,1,59.9
+ORD00053,2025-11-07,davide.conti@email.it,Cappello tecnico,14.9,1,14.9
+ORD00080,2025-11-09,matteo.colombo@email.it,Pantaloni trail M,59.9,2,119.8
+ORD00009,2025-11-18,giulia.verdi@email.it,Cappello tecnico,14.9,2,29.8
+ORD00050,2025-11-23,chiara.russo@email.it,Scarpe running M42,49.9,1,49.9
+ORD00064,2025-11-27,francesco.greco@email.it,Giacca impermeabile L,129.9,3,389.7
+ORD00060,2025-12-03,elena.marino@email.it,Scarpe running M42,49.9,1,49.9
+ORD00092,2025-12-07,federica.lombardi@email.it,Guanti trail running,19.9,1,19.9
+ORD00066,2025-12-11,valentina.ricci@email.it,Zaino trekking 45L,89.9,1,89.9
+ORD00036,2025-12-19,antonio.mele@email.it,Giacca impermeabile L,129.9,3,389.7
+ORD00072,2026-01-06,valentina.ricci@email.it,Cappello tecnico,14.9,1,14.9
+ORD00005,2026-01-20,marco.rossi@email.it,Zaino trekking 45L,89.9,1,89.9
+ORD00006,2026-01-20,marco.rossi@email.it,Borraccia termica,24.9,1,24.9
+ORD00089,2026-01-22,matteo.colombo@email.it,Calze tecniche,9.9,3,29.7
+ORD00028,2026-01-23,sara.ferrari@email.it,Calze tecniche,9.9,3,29.7
+ORD00001,2026-01-23,marco.rossi@email.it,Borraccia termica,24.9,1,24.9
+ORD00049,2026-01-27,chiara.russo@email.it,Guanti trail running,19.9,2,39.8
+ORD00076,2026-01-30,valentina.ricci@email.it,Calze tecniche,9.9,1,9.9
+ORD00037,2026-02-03,antonio.mele@email.it,Cappello tecnico,14.9,2,29.8
+ORD00075,2026-02-08,valentina.ricci@email.it,Guanti trail running,19.9,1,19.9
+ORD00074,2026-02-08,valentina.ricci@email.it,Pantaloni trail M,59.9,3,179.7
+ORD00087,2026-02-11,matteo.colombo@email.it,Giacca impermeabile L,129.9,1,129.9
+ORD00051,2026-02-13,chiara.russo@email.it,Zaino trekking 45L,89.9,3,269.7
+ORD00052,2026-02-18,chiara.russo@email.it,Giacca impermeabile L,129.9,1,129.9
+ORD00078,2026-02-22,matteo.colombo@email.it,Giacca impermeabile L,129.9,2,259.8
+ORD00079,2026-02-22,matteo.colombo@email.it,Zaino trekking 45L,89.9,1,89.9
+ORD00083,2026-02-23,matteo.colombo@email.it,Scarpe running M42,49.9,3,149.7
+ORD00084,2026-02-23,matteo.colombo@email.it,Calze tecniche,9.9,1,9.9
+ORD00061,2026-02-23,elena.marino@email.it,Calze tecniche,9.9,1,9.9
