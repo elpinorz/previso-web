@@ -153,6 +153,53 @@ def analisi():
         "aggiornato":     datetime.now().strftime("%d/%m/%Y %H:%M"),
     }
 
+@app.get("/api/ordini")
+def ordini():
+    if not os.path.exists(CSV_PATH):
+        raise HTTPException(404, "ordini.csv non trovato.")
+    df = carica_df(CSV_PATH)
+    df_sorted = df.sort_values("date", ascending=False)
+    ordini_list = []
+    for _, r in df_sorted.head(100).iterrows():
+        ordini_list.append({
+            "order_id": r["order_id"],
+            "date": str(r["date"].date()),
+            "customer": r["customer"],
+            "product": r["product"],
+            "quantity": int(r["quantity"]),
+            "revenue": float(r["revenue"]),
+        })
+    totale = round(df["revenue"].sum(), 2)
+    media  = round(df["revenue"].mean(), 2)
+    return {"ordini": ordini_list, "totale": totale, "media_ordine": media, "totale_ordini": len(df)}
+
+@app.get("/api/clienti")
+def clienti():
+    if not os.path.exists(CSV_PATH):
+        raise HTTPException(404, "ordini.csv non trovato.")
+    df = carica_df(CSV_PATH)
+    ref = df["date"].max() + timedelta(days=1)
+    rfm = (df.groupby("customer").agg(
+        ultimo_acquisto = ("date",     lambda x: str(x.max().date())),
+        recency         = ("date",     lambda x: (ref - x.max()).days),
+        n_ordini        = ("order_id", "nunique"),
+        spesa_totale    = ("revenue",  "sum"),
+        prodotti        = ("product",  lambda x: list(x.unique())[:3]),
+    ).reset_index())
+    for col in ["recency", "n_ordini", "spesa_totale"]:
+        mn, mx = rfm[col].min(), rfm[col].max()
+        rfm[f"{col}_n"] = (rfm[col] - mn) / (mx - mn + 1e-9)
+    rfm["churn_pct"] = (
+        rfm["recency_n"] * 0.5 +
+        (1 - rfm["n_ordini_n"]) * 0.3 +
+        (1 - rfm["spesa_totale_n"]) * 0.2
+    )
+    rfm["churn_pct"] = (rfm["churn_pct"] * 100).round(0).astype(int)
+    clienti_list = rfm.sort_values("spesa_totale", ascending=False).to_dict("records")
+    for c in clienti_list:
+        c["spesa_totale"] = round(c["spesa_totale"], 2)
+    return {"clienti": clienti_list, "totale_clienti": len(rfm)}
+
 @app.post("/api/upload")
 async def upload(file: UploadFile = File(...)):
     if not file.filename.endswith(".csv"):
